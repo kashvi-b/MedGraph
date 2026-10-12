@@ -1,0 +1,251 @@
+{
+  "summary": {
+    "chunks": 339,
+    "documents": 128,
+    "max_chunk_tokens": 448,
+    "floor_probes": {
+      "in-corpus": {
+        "top": 0.857,
+        "above_floor": 339
+      },
+      "adjacent": {
+        "top": 0.641,
+        "above_floor": 339
+      },
+      "off-topic": {
+        "top": 0.479,
+        "above_floor": 326
+      },
+      "unrelated": {
+        "top": 0.419,
+        "above_floor": 60
+      }
+    },
+    "cases": 13,
+    "k": 6,
+    "similarity_floor": 0.35,
+    "precision_at_k": 0.487,
+    "recall_at_k": 1.0,
+    "cases_with_zero_hits": [],
+    "cases_with_zero_recall": [],
+    "mean_embed_ms": 3102.0,
+    "median_embed_ms": 2719.7,
+    "mean_python_search_ms": 481.6
+  },
+  "cases": [
+    {
+      "id": "guide-001",
+      "precision": 0.167,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.857,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-DIABETES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-DIABETES#0",
+        "MEDLINEPLUS-DIABETESCOMPLICATIONS#0",
+        "MEDLINEPLUS-DIABETICHEARTDISEASE#0"
+      ]
+    },
+    {
+      "id": "guide-002",
+      "precision": 0.333,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.82,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-HOWTOPREVENTDIABETES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-DIABETES#3",
+        "MEDLINEPLUS-DIABETESTYPE2#2",
+        "MEDLINEPLUS-HOWTOPREVENTDIABETES#1"
+      ]
+    },
+    {
+      "id": "guide-003",
+      "precision": 0.667,
+      "recall": 1.0,
+      "any_of": true,
+      "top_score": 0.787,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-COLORECTALCANCER",
+        "MEDLINEPLUS-COLONOSCOPY",
+        "MEDLINEPLUS-CANCERSCREENING"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-COLORECTALCANCER#2",
+        "MEDLINEPLUS-COLORECTALCANCER#1",
+        "MEDLINEPLUS-HEALTHSCREENING#0"
+      ]
+    },
+    {
+      "id": "guide-004",
+      "precision": 0.5,
+      "recall": 1.0,
+      "any_of": true,
+      "top_score": 0.786,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-CHRONICKIDNEYDISEASE",
+        "MEDLINEPLUS-KIDNEYTESTS",
+        "MEDLINEPLUS-KIDNEYDISEASES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-KIDNEYTESTS#0",
+        "MEDLINEPLUS-CHRONICKIDNEYDISEASE#0",
+        "MEDLINEPLUS-KIDNEYDISEASES#0"
+      ]
+    },
+    {
+      "id": "guide-005",
+      "precision": 0.667,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.817,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-ATRIALFIBRILLATION"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-ATRIALFIBRILLATION#0",
+        "MEDLINEPLUS-ATRIALFIBRILLATION#2",
+        "MEDLINEPLUS-ARRHYTHMIA#0"
+      ]
+    },
+    {
+      "id": "guide-006",
+      "precision": 0.167,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.812,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-SLEEPAPNEA"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-SLEEPAPNEA#0",
+        "MEDLINEPLUS-SNORING#0",
+        "MEDLINEPLUS-SLEEPDISORDERS#0"
+      ]
+    },
+    {
+      "id": "guide-007",
+      "precision": 0.667,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.838,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-OSTEOPOROSIS"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-OSTEOPOROSIS#0",
+        "MEDLINEPLUS-OSTEOPOROSIS#1",
+        "MEDLINEPLUS-OSTEOPOROSIS#2"
+      ]
+    },
+    {
+      "id": "guide-008",
+      "precision": 0.5,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.823,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-COPD"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-COPD#0",
+        "MEDLINEPLUS-COPD#2",
+        "MEDLINEPLUS-EMPHYSEMA#0"
+      ]
+    },
+    {
+      "id": "drug-001",
+      "precision": 0.5,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.754,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-DIABETESMEDICINES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-DIABETESMEDICINES#0",
+        "MEDLINEPLUS-DIABETESMEDICINES#2",
+        "MEDLINEPLUS-DIABETESTYPE2#2"
+      ]
+    },
+    {
+      "id": "drug-002",
+      "precision": 0.833,
+      "recall": 1.0,
+      "any_of": true,
+      "top_score": 0.769,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-STATINS",
+        "MEDLINEPLUS-CHOLESTEROLMEDICINES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-CHOLESTEROLMEDICINES#1",
+        "MEDLINEPLUS-STATINS#2",
+        "MEDLINEPLUS-STATINS#1"
+      ]
+    },
+    {
+      "id": "drug-003",
+      "precision": 0.333,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.822,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-BLOODTHINNERS"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-BLOODTHINNERS#0",
+        "MEDLINEPLUS-BLOODTHINNERS#1",
+        "MEDLINEPLUS-BLOODCLOTS#2"
+      ]
+    },
+    {
+      "id": "drug-004",
+      "precision": 0.5,
+      "recall": 1.0,
+      "any_of": true,
+      "top_score": 0.813,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-DIABETESMEDICINES",
+        "MEDLINEPLUS-DIABETESTYPE1"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-DIABETESMEDICINES#0",
+        "MEDLINEPLUS-DIABETES#3",
+        "MEDLINEPLUS-ISLETCELLTRANSPLANTATION#0"
+      ]
+    },
+    {
+      "id": "phi-001",
+      "precision": 0.5,
+      "recall": 1.0,
+      "any_of": false,
+      "top_score": 0.673,
+      "n_hits": 6,
+      "expected": [
+        "MEDLINEPLUS-DIABETESMEDICINES"
+      ],
+      "retrieved": [
+        "MEDLINEPLUS-DIABETESMEDICINES#0",
+        "MEDLINEPLUS-DIABETESMEDICINES#2",
+        "MEDLINEPLUS-DIABETESTYPE2#2"
+      ]
+    }
+  ]
+}

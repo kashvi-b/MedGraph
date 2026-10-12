@@ -1,0 +1,161 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      live_eval:
+        description: "Run the full evaluation against live providers (needs secrets)"
+        type: boolean
+        default: false
+  schedule:
+    # Weekly. Free tiers retire models without notice — a pinned model 404'd
+    # mid-evaluation once already — so the live run is scheduled to catch that
+    # while the repository is idle rather than the next time someone clones it.
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Runs on every push. No API key, no database, no corpus download: everything
+  # here is either offline or a pure function of a committed artifact, so it is
+  # fast and cannot flake on someone else's rate limit.
+  # ---------------------------------------------------------------------------
+  checks:
+    name: Tests and published-number integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Tests
+        run: pytest -q
+
+      # The README's results blocks are rendered from eval/results/*.json. If a
+      # number was typed by hand, or an artifact changed without regenerating,
+      # this fails with a diff. It is the check that would have caught the README
+      # publishing a results table while claiming nine lines above that no
+      # numbers existed yet.
+      - name: README matches the committed eval artifacts
+        run: python scripts/update_readme.py --check
+
+      # Separate from the diff on purpose: --check asks whether the README matches
+      # the artifact, --gate asks whether the artifact is acceptable. Conflating
+      # them would let a regression be laundered into the README by regenerating.
+      - name: Published results honour the refusal promise
+        run: python scripts/update_readme.py --gate
+
+  # ---------------------------------------------------------------------------
+  # Retrieval only. Needs the embedding model and the corpus but no API key, so
+  # it can run without secrets — including on a fork. Kept off the per-push path
+  # because building the corpus costs several minutes and hits a public service.
+  # ---------------------------------------------------------------------------
+  retrieval:
+    name: Retrieval evaluation (no API key)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          pip install -e ".[dev]"
+          pip install -r requirements-embeddings.txt
+
+      - name: Cache the embedding model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('requirements-embeddings.txt') }}
+
+      # The corpus comes from a live public service, so it is not byte-stable
+      # over time and is deliberately not committed. Rebuilding it here checks
+      # that ingestion still works against the real source.
+      - name: Build the corpus
+        run: python scripts/ingest.py --out data/vectors.jsonl
+
+      - name: Evaluate retrieval
+        run: python eval/retrieval_eval.py --vectors data/vectors.jsonl
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retrieval-results
+          path: eval/results/retrieval.json
+
+  # ---------------------------------------------------------------------------
+  # The full pipeline against live providers. Manual or weekly only: Groq's free
+  # tier allows 1,000 requests a day and a per-push run would exhaust it.
+  # ---------------------------------------------------------------------------
+  live:
+    name: End-to-end evaluation (live providers)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    if: |
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.live_eval)
+    env:
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Fail early if secrets are missing
+        run: |
+          for v in GROQ_API_KEY GOOGLE_API_KEY DATABASE_URL; do
+            if [ -z "${!v}" ]; then
+              echo "::error::$v is not set. Add it under Settings → Secrets → Actions."
+              exit 1
+            fi
+          done
+
+      - name: Install
+        run: |
+          pip install -e ".[dev]"
+          pip install -r requirements-embeddings.txt
+
+      - name: Cache the embedding model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('requirements-embeddings.txt') }}
+
+      - name: Schema
+        run: python scripts/init_db.py
+
+      # Three runs, because the verify node is LLM-judged and returns different
+      # verdicts on identical input. One run is a sample, not a measurement.
+      - name: Evaluate end to end
+        run: python eval/run_eval.py --repeat 3
+
+      - name: Published results honour the refusal promise
+        run: python scripts/update_readme.py --gate
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-results
+          path: eval/results/

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "medgraph"
+version = "0.1.0"
+description = "Agentic clinical document intelligence — a LangGraph state machine that answers from public healthcare policy corpora, or refuses with a stated reason."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Swapnil Dwivedi" }]
+
+dependencies = [
+    "langgraph>=1.0,<2",
+    "langchain-core>=1.4,<2",
+    "langchain-groq>=1.1.3,<2",
+    "langchain-google-genai>=4.0,<5",
+    "pydantic>=2.12,<3",
+    "pydantic-settings>=2.6,<3",
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.32,<1",
+    "psycopg[binary]>=3.2,<4",
+    "pgvector>=0.3,<1",
+    "httpx>=0.27,<1",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+embeddings = ["sentence-transformers>=3.0"]
+dev = ["pytest>=8,<9"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]

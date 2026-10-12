@@ -1,0 +1,14 @@
+# Local embedding stack. Version pins here are load-bearing on Intel macOS:
+#   torch 2.2.2 is the LAST release shipping a macosx_x86_64 wheel (2.3.0+ have none)
+#   torch 2.2.2 is compiled against NumPy 1.x, so numpy must stay <2
+#   transformers >=4.5x drops GenerationMixin where sentence-transformers 3.x expects it
+#   sentence-transformers 6.x requires transformers>=5 requires torch>=2.5 — impossible here
+# On Apple Silicon or Linux these pins can all be relaxed.
+
+torch==2.2.2 ; platform_machine == "x86_64" and sys_platform == "darwin"
+torch>=2.2 ; platform_machine != "x86_64" or sys_platform != "darwin"
+numpy<2 ; platform_machine == "x86_64" and sys_platform == "darwin"
+transformers==4.44.2 ; platform_machine == "x86_64" and sys_platform == "darwin"
+tokenizers==0.19.1 ; platform_machine == "x86_64" and sys_platform == "darwin"
+sentence-transformers==3.0.1 ; platform_machine == "x86_64" and sys_platform == "darwin"
+sentence-transformers>=3.0 ; platform_machine != "x86_64" or sys_platform != "darwin"
